@@ -12,6 +12,7 @@ import org.apache.kafka.streams.scala.kstream.{KStream, KTable}
 import org.apache.kafka.streams.scala.serialization.Serdes
 import org.apache.kafka.streams.scala.ImplicitConversions._
 
+import java.io.FileInputStream
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 import java.util.Properties
@@ -114,12 +115,15 @@ object kafkaStreams {
     val topology = builder.build()
 
     val props = new Properties
+    try {
+      val fis = new FileInputStream("src/main/resources/streams.properties")
+      props.load(fis)
+    }
     props.put(StreamsConfig.APPLICATION_ID_CONFIG, "orders-application")
-    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
     props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.stringSerde.getClass)
 
-    // println(topology.describe())
-    val application = new KafkaStreams(topology, props)
-    application.start()
+     println(topology.describe())
+   /* val application = new KafkaStreams(topology, props)
+    application.start()*/
   }
 }
